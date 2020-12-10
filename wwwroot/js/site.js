@@ -79,7 +79,30 @@ function login() {
         .catch(error => console.error('Unable to add item.', error))
         .then(response => console.log('Success', response));
 }
+function i(id) {
+    var sf = 'https://localhost:5001/api/Province';
+    fetch(sf, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+    })
 
+        .then((res) => {
+            return res.json()
+        })
+        .then((data) => {
+            console.log(data);
+            alert(data);
+            var province=document.getElementById('Provinces');
+            if(data!=null){
+                for(var i=0;i<data.length;i++){
+                    province.options.add(new Option(data[i].name))
+                }
+            }
+        })
+}
 
 function GetPersonal(id) {
 
@@ -200,9 +223,6 @@ function GetPersonal(id) {
 function Personal() {
     var imgBox = document.getElementById('Image').value;
     var imgBoxs = document.getElementById('Image');
-    
-    
-
     var img = document.getElementById('img');
     const id = document.getElementById('Id').value;
     const userName = document.getElementById('UserName');
@@ -216,11 +236,11 @@ function Personal() {
     var reader = new FileReader();
     if (imgBox != "") {
         reader.readAsDataURL(imgBoxs.files[0]);
-            reader.onload = function () {
-                img.src = this.result
+        reader.onload = function () {
+            img.src = this.result
         }
     }
-    
+
     var value = 0;
     for (var i = 0; i < radios.length; i++) {
         if (radios[i].checked == true) {
@@ -236,8 +256,8 @@ function Personal() {
         alert("网址不正确哦,请重新输入");
         return;
     }
-    if(imgBox==""){
-        img.src="";
+    if (imgBox == "") {
+        img.src = "";
     }
     const item = {
         Id: parseInt(id, 10),
@@ -258,7 +278,7 @@ function Personal() {
         },
         body: JSON.stringify(item),
     })
-    
+
 
         .then(response => {
             response.json();
