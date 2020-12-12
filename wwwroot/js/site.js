@@ -79,7 +79,7 @@ function login() {
         .catch(error => console.error('Unable to add item.', error))
         .then(response => console.log('Success', response));
 }
-function i(id) {
+function i() {
     var sf = 'https://localhost:5001/api/Province';
     fetch(sf, {
         method: 'POST',
@@ -94,13 +94,47 @@ function i(id) {
         })
         .then((data) => {
             console.log(data);
-            alert(data);
-            var province=document.getElementById('Provinces');
-            if(data!=null){
-                for(var i=0;i<data.length;i++){
-                    province.options.add(new Option(data[i].name))
+            var province = document.getElementById('Provinces');
+            if (data != null) {
+                for (var i = 0; i < data.length; i++) {
+                    //  var sfid=province.options.add(new Option(data[i].name))
+                    var op = new Option(data[i].name, data[i].id)
+                    province.options.add(op);
                 }
+
             }
+            var city = 'https://localhost:5001/api/City';
+
+            province.onchange = function () {
+
+                var index = province.selectedIndex;
+                var value = province.options[index].value;
+                fetch(city + '?parentid=' + value, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                })
+                    .then((res) => {
+                        return res.json()
+                    })
+                    .then((data) => {
+                        console.log(data);
+                        var cities = document.getElementById('City')
+                        if (cities.value != "") {
+                            cities.innerHTML = "";
+                        }
+                        if (data != null) {
+                            for (var i = 0; i < data.length; i++) {
+                                var op = new Option(data[i].name, data[i].id)
+                                cities.options.add(op);
+                            }
+
+                        }
+                    })
+            }
+
         })
 }
 
@@ -118,12 +152,39 @@ function GetPersonal(id) {
         })
         .then((datas) => {
             console.log(datas);
+
+
+
+            var sf = 'https://localhost:5001/api/Province';
+            fetch(sf, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            })
+
+                .then((res) => {
+                    return res.json()
+                })
+                .then((data) => {
+                    console.log(data);
+                    var province = document.getElementById('Provinces');
+                    if (data != null) {
+                        for (var i = 0; i < data.length; i++) {
+                            //  var sfid=province.options.add(new Option(data[i].name))
+                            var op = new Option(data[i].name, data[i].id)
+                            province.options.add(op);
+                        }
+
+                    }
+                })
+
             document.getElementById('Id').value = datas.id;
             document.getElementById('UserName').value = datas.userName;
             document.getElementById('PassWord').value = datas.passWord;
             document.getElementById('Provinces').value = datas.provinces;
-            var cit = document.getElementById('City').value
-            cit = datas.city;
+            document.getElementById('City').value = datas.city;
             document.getElementById('Url').value = datas.url;
             document.getElementById('img').src = datas.fileUrl;
             if (datas.gender == "男") {
@@ -134,89 +195,92 @@ function GetPersonal(id) {
             }
             document.getElementById('Age').value = datas.age;
 
-            var data = [{
-                Provinces: "广东省",
-                cities: ["深圳市", "东莞市", "潮汕市", "中山市", "广州市"]
-            },
-            {
-                Provinces: "贵州省",
-                cities: ["都匀市", "遵义市", "独山市", "瓮安市", "贵阳市"]
-            },
-            {
-                Provinces: "辽宁省",
-                cities: ["沈阳市", "大连市", "铁岭市", "丹东市", "锦州市"]
-            }]
 
-            var sf = document.querySelector("#Provinces");
-            var cityBox = document.querySelector("#City");
-            var cityHid = document.querySelector("#hidCity").value;
-            var imgBox = document.getElementById('Image');
-            var img = document.getElementById('img');
+
+            var cityurl = 'https://localhost:5001/api/City';
+            var province = document.getElementById('Provinces');
+            var index = province.selectedIndex;
+            var value = province.options[index].value;
+            var cit = datas.city;
+
+            fetch(cityurl + '?parentid=' + value, {
+
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then((res) => {
+                    return res.json()
+                })
+                .then((data) => {
+                    console.log(data);
+                    var cities = document.getElementById('City');
+
+                    if (cities.value != "") {
+                        cities.innerHTML = "";
+                    }
+                    if (data != null) {
+                        // for (var i = 0; i < data.length; i++) {
+                        //     var op = new Option(data[i].name, data[i].id)
+                        //     cities.options.add(op);
+                        // }
+                        for (var i = 0; i < data.length; i++) {
+                            var city = data[i].id;
+                            var opt = document.createElement("option");
+                            opt.value = data[i].id;
+                            opt.text = data[i].name;
+
+                            if (city == cit) {
+                                opt.setAttribute("selected", true);
+                                cities.appendChild(opt);
+                            }
+
+                        }
+                    }
+                })
+
+
+            // var sf = document.querySelector("#Provinces");
+            // var cityBox = document.querySelector("#City");
+            // var imgBox = document.getElementById('Image');
+            // var img = document.getElementById('img');
             // addEventListener向元素添加事件
+            // if (sf.value == "广东省" || sf.value == "贵州省" || sf.value == "辽宁省") {
+            //     var cityData;
+            //     if (sf.value == "广东省") {
+            //         cityData = data[0].cities;
+            //     }
+            //     if (sf.value == "贵州省") { 
+            //         cityData = data[1].cities;
+            //     }
+            //     if (sf.value == "辽宁省") {
+            //         cityData = data[2].cities;
+            //     }
+            //     for (var i = 0; i < cityData.length; i++) {
+            //         var city = cityData[i];
+            //         var opt = document.createElement("option");
+            //         opt.value = city;
+            //         opt.text = city;
+            //         if (city == cit) {
+            //             opt.setAttribute("selected", true);
+            //         }
+            //         cityBox.appendChild(opt);
+            //     }
+            // }
+            var imgBox = document.getElementById('Image');
             imgBox.addEventListener("change", function () {
                 //FileReader可以获取文件中的数据
                 var reader = new FileReader();
                 //获取文件内容以url形式表示
                 reader.readAsDataURL(imgBox.files[0]);
-
                 reader.onload = function () {
                     //赋值给img
                     img.src = this.result
                 }
             })
-            if (sf.value == "广东省" || sf.value == "贵州省" || sf.value == "辽宁省") {
-                var cityData;
-                if (sf.value == "广东省") {
-                    cityData = data[0].cities;
-                }
-                if (sf.value == "贵州省") {
-                    cityData = data[1].cities;
-                }
-                if (sf.value == "辽宁省") {
-                    cityData = data[2].cities;
-                }
-                for (var i = 0; i < cityData.length; i++) {
-                    var city = cityData[i];
-                    var opt = document.createElement("option");
-                    opt.value = city;
-                    opt.text = city;
-                    if (city == cit) {
-                        opt.setAttribute("selected", true);
-                    }
-                    cityBox.appendChild(opt);
-                }
-            }
-
-
-
-            sf.onchange = function () {
-                cityBox.innerHTML = "";
-                var Citydata;
-                if (sf.value == "广东省") {
-                    Citydata = data[0].cities;
-                }
-                if (sf.value == "贵州省") {
-                    Citydata = data[1].cities;
-                }
-                if (sf.value == "辽宁省") {
-                    Citydata = data[2].cities;
-                }
-                for (var j = 0; j < Citydata.length; j++) {
-                    var citys = Citydata[j];
-                    var opt = document.createElement("option");
-                    opt.value = citys;
-                    opt.text = citys;
-
-                    cityBox.appendChild(opt);
-                }
-            }
         })
-    //    document.getElementById('Gender').value=item.UserName;
-    //    document.getElementById('Age').value=item.UserName;
-    //    document.getElementById('Provinces').value=item.UserName;
-    //    document.getElementById('City').value=item.UserName;
-    //    document.getElementById('img').value=item.UserName;
-    //    document.getElementById('Url').value=item.UserName;
 }
 
 
@@ -256,21 +320,23 @@ function Personal() {
         alert("网址不正确哦,请重新输入");
         return;
     }
-    if (imgBox == "") {
-        img.src = "";
-    }
+
+    var index = provinves.selectedIndex;
+    var Pvalue = provinves.options[index].value;
+    var cindex = city.selectedIndex;
+    var Cvalue = city.options[cindex].value;
     const item = {
         Id: parseInt(id, 10),
         UserName: userName.value.trim(),
         PassWord: passWord.value.trim(),
         Gender: value,
         Age: age.value.trim(),
-        Provinces: provinves.value.trim(),
-        City: city.value.trim(),
+        Provinces: Pvalue,
+        City: Cvalue,
         Url: url.value.trim(),
         Image: img.src
     };
-    fetch(url1 + "?id=" + id, {
+    fetch(url1 + "?id=1", {
         method: "POST",
         headers: {
             'Accept': 'application/json',
