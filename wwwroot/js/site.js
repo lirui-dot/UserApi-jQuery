@@ -68,16 +68,14 @@ function login() {
         },
         body: JSON.stringify(item)
     })
-
-        .then(response => {
-            response.json();
-            alert("登录成功！");
-            window.location.href = 'personal.html' + '?id=1';
-
-
+        .then((res) => {
+            return res.json()
         })
-        .catch(error => console.error('Unable to add item.', error))
-        .then(response => console.log('Success', response));
+        .then((data) => {
+            alert("登录成功！");
+            window.location.href = 'personal.html' + '?id=' + data.id;
+        })
+
 }
 function i() {
     var sf = 'https://localhost:5001/api/Province';
@@ -139,8 +137,16 @@ function i() {
 }
 
 function GetPersonal(id) {
-
-    fetch(urls + '?id=1', {
+    var str = location.href;
+    var urlinfo = window.location.href;  //获取当前页面的url
+    console.log(urlinfo)
+    var len = urlinfo.split("?");//获取url的长度
+    newsidinfo = len[1];
+    console.log(newsidinfo);
+    var newsids = newsidinfo.split("&");//对获得的参数字符串按照“=”进行分割
+    parameter1 = newsids[0];
+    os = parameter1.split("=")[1];
+    fetch(urls + '?id=' + os, {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -152,34 +158,6 @@ function GetPersonal(id) {
         })
         .then((datas) => {
             console.log(datas);
-
-
-
-            var sf = 'https://localhost:5001/api/Province';
-            fetch(sf, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-            })
-
-                .then((res) => {
-                    return res.json()
-                })
-                .then((data) => {
-                    console.log(data);
-                    var province = document.getElementById('Provinces');
-                    if (data != null) {
-                        for (var i = 0; i < data.length; i++) {
-                            //  var sfid=province.options.add(new Option(data[i].name))
-                            var op = new Option(data[i].name, data[i].id)
-                            province.options.add(op);
-                        }
-
-                    }
-                })
-
             document.getElementById('Id').value = datas.id;
             document.getElementById('UserName').value = datas.userName;
             document.getElementById('PassWord').value = datas.passWord;
@@ -195,80 +173,6 @@ function GetPersonal(id) {
             }
             document.getElementById('Age').value = datas.age;
 
-
-
-            var cityurl = 'https://localhost:5001/api/City';
-            var province = document.getElementById('Provinces');
-            var index = province.selectedIndex;
-            var value = province.options[index].value;
-            var cit = datas.city;
-
-            fetch(cityurl + '?parentid=' + value, {
-
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-            })
-                .then((res) => {
-                    return res.json()
-                })
-                .then((data) => {
-                    console.log(data);
-                    var cities = document.getElementById('City');
-
-                    if (cities.value != "") {
-                        cities.innerHTML = "";
-                    }
-                    if (data != null) {
-                        // for (var i = 0; i < data.length; i++) {
-                        //     var op = new Option(data[i].name, data[i].id)
-                        //     cities.options.add(op);
-                        // }
-                        for (var i = 0; i < data.length; i++) {
-                            var city = data[i].id;
-                            var opt = document.createElement("option");
-                            opt.value = data[i].id;
-                            opt.text = data[i].name;
-
-                            if (city == cit) {
-                                opt.setAttribute("selected", true);
-                                cities.appendChild(opt);
-                            }
-
-                        }
-                    }
-                })
-
-
-            // var sf = document.querySelector("#Provinces");
-            // var cityBox = document.querySelector("#City");
-            // var imgBox = document.getElementById('Image');
-            // var img = document.getElementById('img');
-            // addEventListener向元素添加事件
-            // if (sf.value == "广东省" || sf.value == "贵州省" || sf.value == "辽宁省") {
-            //     var cityData;
-            //     if (sf.value == "广东省") {
-            //         cityData = data[0].cities;
-            //     }
-            //     if (sf.value == "贵州省") { 
-            //         cityData = data[1].cities;
-            //     }
-            //     if (sf.value == "辽宁省") {
-            //         cityData = data[2].cities;
-            //     }
-            //     for (var i = 0; i < cityData.length; i++) {
-            //         var city = cityData[i];
-            //         var opt = document.createElement("option");
-            //         opt.value = city;
-            //         opt.text = city;
-            //         if (city == cit) {
-            //             opt.setAttribute("selected", true);
-            //         }
-            //         cityBox.appendChild(opt);
-            //     }
-            // }
             var imgBox = document.getElementById('Image');
             imgBox.addEventListener("change", function () {
                 //FileReader可以获取文件中的数据
@@ -280,6 +184,86 @@ function GetPersonal(id) {
                     img.src = this.result
                 }
             })
+
+            if (datas.provinces != "0") {
+                var sf = 'https://localhost:5001/api/Province';
+                var pro = datas.provinces;
+                fetch(sf, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                })
+                    .then((res) => {
+                        return res.json()
+                    })
+                    .then((data) => {
+                        console.log(data);
+                        var province = document.getElementById('Provinces');
+                        if (data != null) {
+                            for (var i = 0; i < data.length; i++) {
+                                var city = data[i].id;
+                                var opt = document.createElement("option");
+                                opt.value = data[i].id;
+                                opt.text = data[i].name;
+
+                                if (city == pro) {
+                                    opt.setAttribute("selected", true);
+                                    province.appendChild(opt);
+                                }
+                            }
+
+                        }
+                    })
+            }
+            if (datas.city != "0") {
+                var cityurl = 'https://localhost:5001/api/City';
+                var province = document.getElementById('Provinces');
+                var index = province.selectedIndex;
+                var value = province.options[index].value;
+                var cit = datas.city;
+
+                fetch(cityurl + '?parentid=' + value, {
+
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                })
+                    .then((res) => {
+                        return res.json()
+                    })
+                    .then((data) => {
+                        console.log(data);
+                        var cities = document.getElementById('City');
+
+                        if (cities.value != "") {
+                            cities.innerHTML = "";
+                        }
+                        if (data != null) {
+                            // for (var i = 0; i < data.length; i++) {
+                            //     var op = new Option(data[i].name, data[i].id)
+                            //     cities.options.add(op);
+                            // }
+                            for (var i = 0; i < data.length; i++) {
+                                var city = data[i].id;
+                                var opt = document.createElement("option");
+                                opt.value = data[i].id;
+                                opt.text = data[i].name;
+
+                                if (city == cit) {
+                                    opt.setAttribute("selected", true);
+                                    cities.appendChild(opt);
+                                }
+
+                            }
+                        }
+                    })
+            }
+
+
         })
 }
 
@@ -336,7 +320,7 @@ function Personal() {
         Url: url.value.trim(),
         Image: img.src
     };
-    fetch(url1 + "?id=1", {
+    fetch(url1 + "?id="+id, {
         method: "POST",
         headers: {
             'Accept': 'application/json',
