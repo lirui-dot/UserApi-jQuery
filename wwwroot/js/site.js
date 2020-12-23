@@ -119,7 +119,7 @@ function GetPersonal() {
                         console.log(data);
                         var pro = $('#Provinces').val();
                         if (data != null) {
-                            if ($('#Provinces').val()!=null){
+                            if ($('#Provinces').val() != null) {
                                 $('#Provinces').empty();
                             }
                             for (var i in data) {
@@ -131,7 +131,6 @@ function GetPersonal() {
                         }
                     }
                 })
-
                 var province = document.getElementById('Provinces');
                 var index = province.selectedIndex;
                 var value = province.options[index].value;
@@ -152,10 +151,6 @@ function GetPersonal() {
                         }
                     }
                 })
-
-
-
-
             }
         })
     })
