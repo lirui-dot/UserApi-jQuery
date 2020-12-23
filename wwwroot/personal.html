@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <form id="form" action="javascript:void(0);" onsubmit="Personal()" enctype="multipart/form-data">
+    <form id="form" action="javascript:void(0);"  onsubmit="Personal()" enctype="multipart/form-data">
 
         <div>
             <h3>
@@ -20,8 +20,8 @@
 
             <p>
                 性别:
-                <input type="radio" id="Gender1"   name="loan" value="男" >男
-                <input type="radio" id="Gender2" name="loan" value="女"  >女
+                <input type="radio" id="Gender1" name="loan" value="男">男
+                <input type="radio" id="Gender2" name="loan" value="女">女
             </p>
             <p>
                 年&emsp;龄:<input type="text" id="Age" />
@@ -33,7 +33,9 @@
                 </select>
             </p>
             <p>
-                城&emsp;市:<select id="City"></select>
+                城&emsp;市:<select id="City">
+                    <option>请选择</option>
+                </select>
             </p>
             <p>
                 图&emsp;片:<input id="Image" type="file">
@@ -48,19 +50,64 @@
             <p>
                 <input id="register" type="submit" value="完成" />
             </p>
-            <script src="js/site.js" asp-append-version="true"></script>
             <input type="hidden" id="hidCity">
             <input type="hidden" id="Id">
+            <script src="jQuery/jquery-3.5.1.js"></script>
+            <script src="js/site.js"></script>
     </form>
     </div>
     <script>
-        
-        
-        
         GetPersonal();
-        i();
-       
+        $(function () {
+            $.ajax({
+                url: 'https://localhost:5001/api/Province',
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    console.log(data);
 
+                    if (data != null) {
+                        for (var i in data) {
+                            $("#Provinces").append("<option value='" + data[i].id + "'>" + data[i].name + "</option>");
+                        }
+                    }
+                }
+            })
+            var province = document.getElementById('Provinces');
+            $('#Provinces').change(function () {
+                var index = province.selectedIndex;
+                var value = province.options[index].value;
+                $.ajax({
+                    url: 'https://localhost:5001/api/City' + '?parentid=' + value,
+                    type: 'GET',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        console.log(data);
+                        var cities = document.getElementById('City')
+                        if (cities.value != "") {
+                            cities.innerHTML = "";
+                        }
+                        if (data != null) {
+                            for (var i in data) {
+                                $("#City").append("<option value='" + data[i].id + "'>" + data[i].name + "</option>");
+                            }
+                        }
+                    }
+                })
+            })
+            $('#Image').change(function () {
+                var reader = new FileReader();
+                var file = document.getElementById('Image').files[0];
+                reader.readAsDataURL(file);
+                reader.onloadend = function () {
+                    var src1 = reader.result;
+                    document.getElementById('img').src = src1;
+                }
+            })
+            
+        })
     </script>
 </body>
 

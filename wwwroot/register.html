@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <form action="javascript:void(0);" method="POST" onsubmit="Register()">
+    <form action="javascript:void(0);" method="POST">
         <div>
             <h3>
                 注册
@@ -28,9 +28,52 @@
             <p>
                 <a href="index.html">请登录</a>
             </p>
-            <script src="js/site.js" asp-append-version="true"></script>
+        </div>
     </form>
-    </div>
 </body>
+<script src="jQuery/jquery-3.5.1.js"></script>
+<script>
+    $(function () {
+        $('#register').click(function () {
+            var username = $('#UserName').val();
+            var pwd = $('#PassWord').val();
+            var Cpwd = $('#CpassWord').val();
+            if (username == "") {
+                alert("用户名不能为空");
+                return;
+            }
+            if (pwd == "") {
+                alert("密码不能为空");
+                return;
+            }
+            if (Cpwd != pwd) {
+                alert("二次密码不一致，请重新输入");
+                return;
+            }
+            var item = {
+                UserName: username,
+                PassWord: pwd,
+                CpassWord: Cpwd
+            }
+            $.ajax({
+                url: 'https://localhost:5001/api/Register',
+                type: 'POST',
+                dataType: "json",
+                contentType: 'application/json',
+                data: JSON.stringify(item),
+                success: function (item) {
+                    if(item.userName!=null){
+                        alert("注册成功！");
+                    window.location.href = 'index.html'; 
+                    }else{
+                        alert("用户名重复")
+                    }
+                   
+                }
+            })
+
+        })
+    })
+</script>
 
 </html>

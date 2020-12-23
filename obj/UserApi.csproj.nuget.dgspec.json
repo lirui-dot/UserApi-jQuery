@@ -1,21 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "E:\\new vs code\\UserApiJs\\UserApi.csproj": {}
+    "E:\\new vs code\\UserApi jQuery\\UserApi.csproj": {}
   },
   "projects": {
-    "E:\\new vs code\\UserApiJs\\UserApi.csproj": {
+    "E:\\new vs code\\UserApi jQuery\\UserApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\new vs code\\UserApiJs\\UserApi.csproj",
+        "projectUniqueName": "E:\\new vs code\\UserApi jQuery\\UserApi.csproj",
         "projectName": "UserApi",
-        "projectPath": "E:\\new vs code\\UserApiJs\\UserApi.csproj",
+        "projectPath": "E:\\new vs code\\UserApi jQuery\\UserApi.csproj",
         "packagesPath": "C:\\Users\\lirui\\.nuget\\packages\\",
-        "outputPath": "E:\\new vs code\\UserApiJs\\obj\\",
+        "outputPath": "E:\\new vs code\\UserApi jQuery\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\"
+        ],
         "configFilePaths": [
           "C:\\Users\\lirui\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
@@ -101,7 +105,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }
