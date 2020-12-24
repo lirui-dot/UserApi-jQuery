@@ -1,10 +1,13 @@
 function Personal() {
     $(function () {
+        var username = $('#UserName').val();
+        var pwd = $('#PassWord').val();
         var gender = $("input[name='loan']");
         var age = $('#Age').val();
         var provinceid = $('#Provinces').val();
         var cityid = $('#City').val();
         var url = $('#Url').val();
+
 
         var value = 0;
         for (var i = 0; i < gender.length; i++) {
@@ -50,6 +53,8 @@ function Personal() {
         var cityid = city.options[cindex].value;
 
         var item = {
+            UserName: username,
+            PassWord: pwd,
             Gender: value,
             Age: age,
             Province: provinceid,
@@ -98,6 +103,8 @@ function GetPersonal() {
             contentType: 'application/json',
             success: function (item) {
                 console.log(item);
+                $('#UserName').val(item.userName);
+                $('#PassWord').val(item.passWord);
                 if (item.gender == "男") {
                     $('#Gender1').attr("checked", "checked");
                 }
